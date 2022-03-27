@@ -10,6 +10,15 @@
     <link rel="stylesheet" href="./styles/main.css" />
     <link rel="stylesheet" href="./styles/login.css" />
     <!-- style -->
+
+    <script>
+      let data = sessionStorage.getItem("user");
+      if (!data) {
+        window.location.replace("/login");
+      } else {
+        window.location.replace("/");
+      }
+    </script>
   </head>
   <body>
     <div class="login-ctr">
@@ -17,9 +26,17 @@
         <img src="./images/login.jpg" alt="" />
       </div>
       <div>
-        <form action="">
+        <form id="register_form">
           <h1>Register</h1>
           <span>for an account....</span>
+          <div class="input-ctr">
+            <label for="">First Name</label>
+            <input type="text" name="first_name" />
+          </div>
+          <div class="input-ctr">
+            <label for="">Last Name</label>
+            <input type="text" name="last_name" />
+          </div>
           <div class="input-ctr">
             <label for="">Username</label>
             <input type="text" name="username" />
@@ -29,15 +46,32 @@
             <input type="password" name="password" />
           </div>
           <div class="input-ctr">
-            <label for="">Repeat Password</label>
-            <input type="password" name="repeat_password" />
-          </div>
-          <div class="input-ctr">
             <button type="submit" name="submit">Sign Up</button>
           </div>
-          <span>Have an account Already? <a href="./login.php"> Login</a></span>
+          <span>Have an account Already? <a href="./login"> Login</a></span>
         </form>
       </div>
     </div>
+    <script src="./scripts/axios.js"></script>
+    <script>
+      let form_submit = document.getElementById("register_form");
+      form_submit.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        let data_obj = {};
+        let form_data = new FormData(e.target);
+        form_data.forEach((v, i) => {
+          data_obj[i] = v;
+        });
+        let res = await axios.post("/api/register", data_obj);
+        if (res.data == "Error") {
+          alert("A server error occured....");
+        } else if (res.data == "1") {
+          alert("Username Taken....");
+        } else {
+          alert("Success, Press Ok to Login....");
+          window.location.replace("/login");
+        }
+      });
+    </script>
   </body>
 </html>

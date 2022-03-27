@@ -10,6 +10,13 @@
     <link rel="stylesheet" href="./styles/main.css" />
     <link rel="stylesheet" href="./styles/login.css" />
     <!-- style -->
+
+    <script>
+      let data = sessionStorage.getItem("user");
+      if (data) {
+        window.location.replace("/");
+      }
+    </script>
   </head>
   <body>
     <div class="login-ctr">
@@ -32,11 +39,32 @@
             <button type="submit" name="submit">Sign In</button>
           </div>
           <span
-            >Dont Have an account?
-            <a href="./register.php"> Register Here</a></span
+            >Dont Have an account? <a href="./register"> Register Here</a></span
           >
         </form>
       </div>
     </div>
+    <script src="./scripts/axios.js"></script>
+    <script>
+      let form_submit = document.getElementById("login_form");
+      form_submit.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        let data_obj = {};
+        let form_data = new FormData(e.target);
+        form_data.forEach((v, i) => {
+          data_obj[i] = v;
+        });
+        let res = await axios.post("/api/login", data_obj);
+        if (res.data == "1") {
+          alert("A server error occured....");
+        } else if (res.data == "3") {
+          alert("Wrong Details Provided...");
+        } else {
+          alert("Success, Press Ok to Continue....");
+          sessionStorage.setItem("user", JSON.stringify(res.data));
+          window.location.reload();
+        }
+      });
+    </script>
   </body>
 </html>
