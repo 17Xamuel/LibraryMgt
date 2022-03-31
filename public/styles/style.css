@@ -4,3 +4,38 @@
   align-items: center;
   margin: 15px 0px;
 }
+.form_ctr_flex {
+  display: flex;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 5px;
+}
+.form_ctr_flex > div {
+  flex: 1;
+  padding: 10px;
+  margin: 5px;
+}
+
+/**details-ctr*/
+
+.details-ctr {
+  display: flex;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  padding: 30px 20px;
+  border-radius: 5px;
+}
+
+.details-ctr > div {
+  flex: 1;
+}
+.details-ctr > div > div {
+  margin: 30px 5px;
+}
+.title {
+  font-weight: bold;
+  font-size: 21px;
+  display: block;
+}
+
+.title-value {
+  font-size: 15px;
+}

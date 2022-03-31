@@ -113,112 +113,105 @@
         </div>
       </header>
       <main>
-        <div class="cards">
-          <div class="card-single">
-            <div class="">
-              <h3>...</h3>
-              <span>
-                Total Books <br />
-                <span style="font-size: 13px">In the System</span>
-              </span>
-            </div>
-            <div class="">
-              <span class="las la-users"> </span>
-            </div>
-          </div>
-          <div class="card-single">
-            <div class="">
-              <h3>...</h3>
-              <span>Books Taken</span>
-              <br />
-              <span style="font-size: 13px">off the shelvies</span>
-            </div>
-            <div class="">
-              <span class="las la-users"></span>
-            </div>
-          </div>
-          <div class="card-single">
-            <div class="">
-              <h3>...</h3>
-              <span>Books Available</span>
-              <br />
-              <span style="font-size: 13px">For use</span>
-            </div>
-            <div class="">
-              <span class="las la-users"> </span>
-            </div>
-          </div>
-          <div class="card-single">
-            <div class="">
-              <h3>...</h3>
-              <span>System Users</span>
-              <br />
-              <span style="font-size: 13px"> managing the system</span>
-            </div>
-            <div class="">
-              <span class="las la-users"> </span>
-            </div>
-          </div>
-        </div>
         <div class="fullwidth-ctr">
-          <div class="card">
+          <form class="card" id="new_book_form">
             <div class="table-header-flex">
-              <h4>Recently Added</h4>
+              <h4>Register a new Book</h4>
               <div class="table-header-search-ctr">
-                <a href="/new">
-                  <button class="btn btn-primary">Register A Book</button>
-                </a>
+                <button class="btn btn-primary" type="submit" name="submit">
+                  Register
+                </button>
               </div>
             </div>
-            <table class="table">
-              <thead>
-                <tr>
-                  <th scope="col">Book Title</th>
-                  <th scope="col">Author</th>
-                  <th scope="col">Publisher</th>
-                  <th scope="col">Rack No</th>
-                  <th scope="col">Number of Copies</th>
-                  <th scope="col">Shelf No</th>
-                </tr>
-              </thead>
-              <tbody id="fill_books"></tbody>
-            </table>
-          </div>
+            <div class="form_ctr_flex">
+              <div>
+                <div class="form-group">
+                  <label for="book_title">Book Title</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="book_title"
+                    name="book_title"
+                    placeholder="Enter Book Title"
+                  />
+                </div>
+                <div class="form-group">
+                  <label for="book_author">Author</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="book_author"
+                    name="book_author"
+                    placeholder="Enter book author"
+                  />
+                </div>
+                <div class="form-group">
+                  <label for="book_copies">Number of Copies</label>
+                  <input
+                    type="number"
+                    name="book_copies"
+                    class="form-control"
+                    id="book_copies"
+                    placeholder="No of Copies Available"
+                  />
+                </div>
+              </div>
+              <div>
+                <div class="form-group">
+                  <label for="book_publisher">Publisher</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    name="book_publisher"
+                    id="book_publisher"
+                    placeholder="Book Publisher"
+                  />
+                </div>
+                <div class="form-group">
+                  <label for="book_rack">Rack</label>
+                  <input
+                    type="text"
+                    name="book_rack"
+                    class="form-control"
+                    id="book_rack"
+                    placeholder="Rack for the Book"
+                  />
+                </div>
+                <div class="form-group">
+                  <label for="book_shelf">Shelf Number</label>
+                  <input
+                    type="text"
+                    name="book_shelf"
+                    class="form-control"
+                    id="book_shelf"
+                    placeholder="Book Shelf Number"
+                  />
+                </div>
+              </div>
+            </div>
+          </form>
         </div>
       </main>
     </div>
+
     <script src="./scripts/axios.js"></script>
     <script>
-      document.addEventListener("DOMContentLoaded", async () => {
-        let res = await axios.get("/api/books/all");
-        let tbody = document.getElementById("fill_books");
-        let fill_html_1 = ``;
-        if (res.data.length > 0) {
-          res.data.forEach((el) => {
-            fill_html_1 += `
-            <tr>
-              <td>${el.book_title}</td>
-              <td>${el.book_author}</td>
-              <td>${el.book_publisher}</td>
-              <td>${el.book_rack}</td>
-              <td>${el.book_shelf}</td>
-              <td>${el.book_copies}</td>
-              <td>
-                <a href="/book?v=${el.book_id}">
-                  <button class="btn btn-primary">Details</button>
-                </a>
-              </td>
-            </tr>
-            `;
-          });
+      let form_submit = document.getElementById("new_book_form");
+      form_submit.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        let data_obj = {};
+        let form_data = new FormData(e.target);
+        form_data.forEach((v, i) => {
+          data_obj[i] = v;
+        });
 
-          tbody.innerHTML = fill_html_1;
+        data_obj["book_added_by"] = JSON.parse(data).user_id;
+        let res = await axios.post("/api/books/new", data_obj);
+        if (res.data == "1") {
+          alert("A server error occured....");
         } else {
-          tbody.innerHTML = `
-            <tr>
-              <td>No Book Added....</td>
-            </tr>
-          s`;
+          alert("Book Added, Press Ok to Continue....");
+          window.location.reload();
         }
       });
     </script>

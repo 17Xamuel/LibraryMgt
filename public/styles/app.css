@@ -275,6 +275,7 @@ main {
   height: fit-content;
   border-radius: 10px;
   background: #ffffff;
+  border: none !important;
   box-shadow: 6px 6px 9px #dee1e5, -2px -2px 5px #ffffff;
 }
 .card-header,

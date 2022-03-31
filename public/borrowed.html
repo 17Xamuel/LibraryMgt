@@ -59,25 +59,25 @@
         <div class="sidebar-menu">
           <ul>
             <li>
-              <a class="active" href="">
+              <a class="" href="/">
                 <span class="las la-home"></span>
                 <span>Home</span>
               </a>
             </li>
             <li>
-              <a class="" href="">
+              <a class="" href="/catalog">
+                <span class="las la-prescription-bottle-alt"></span>
+                <span>Catalog</span>
+              </a>
+            </li>
+            <li>
+              <a class="active" href="/borrowed">
                 <span class="las la-user-plus"></span>
                 <span>Borrowed Books</span>
               </a>
             </li>
             <li>
-              <a class="" href="">
-                <span class="las la-prescription-bottle-alt"></span>
-                <span>All Books</span>
-              </a>
-            </li>
-            <li>
-              <a class="" href="">
+              <a class="" href="/users">
                 <span class="las la-prescription-bottle-alt"></span>
                 <span>Users</span>
               </a>
@@ -116,65 +116,59 @@
         <div class="fullwidth-ctr">
           <div class="card">
             <div class="table-header-flex">
-              <h4>Recently Added</h4>
+              <h4>Books Borrowed</h4>
               <div class="table-header-search-ctr">
-                <input
-                  class="form-control mr-sm-2"
-                  type="search"
-                  placeholder="Search"
-                  aria-label="Search"
-                />
+                <a href="/new">
+                  <button class="btn btn-primary">Register A Book</button>
+                </a>
               </div>
             </div>
             <table class="table">
               <thead>
                 <tr>
-                  <th scope="col">Book Name</th>
-                  <th scope="col">Author</th>
-                  <th scope="col">Publisher</th>
-                  <th scope="col">Added by</th>
-                  <th scope="col">Number of Copies</th>
-                  <th scope="col">Copies Available</th>
+                  <th scope="col">Book Id Number</th>
+                  <th scope="col">Book Title</th>
+                  <th scope="col">Book Holder</th>
                 </tr>
               </thead>
-              <tbody>
-                <tr>
-                  <td>Javascript mysteries</td>
-                  <td>Sam</td>
-                  <td>Mk Publishers</td>
-                  <td>Acol Stephen</td>
-                  <td>20</td>
-                  <td>15</td>
-                </tr>
-                <tr>
-                  <td>Javascript mysteries</td>
-                  <td>Sam</td>
-                  <td>Mk Publishers</td>
-                  <td>Acol Stephen</td>
-                  <td>20</td>
-                  <td>15</td>
-                </tr>
-                <tr>
-                  <td>Javascript mysteries</td>
-                  <td>Sam</td>
-                  <td>Mk Publishers</td>
-                  <td>Acol Stephen</td>
-                  <td>20</td>
-                  <td>15</td>
-                </tr>
-                <tr>
-                  <td>Javascript mysteries</td>
-                  <td>Sam</td>
-                  <td>Mk Publishers</td>
-                  <td>Acol Stephen</td>
-                  <td>20</td>
-                  <td>15</td>
-                </tr>
-              </tbody>
+              <tbody id="fill_books"></tbody>
             </table>
           </div>
         </div>
       </main>
     </div>
+    <script src="./scripts/axios.js"></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", async () => {
+        let res = await axios.get("/api/books/borrowed");
+
+        let tbody = document.getElementById("fill_books");
+        let fill_html_1 = ``;
+        if (res.data.length > 0) {
+          res.data.forEach((el) => {
+            fill_html_1 += `
+            <tr>
+              <td>${el.gw_id}</td>
+              <td>${el.book_title}</td>
+              <td>${el.book_holder}</td>
+              <td>
+                <a href="/book?v=${el.book_id}">
+                  <button class="btn btn-primary">Return</button>
+                </a>
+              </td>
+            </tr>
+            `;
+          });
+
+          tbody.innerHTML = fill_html_1;
+        } else {
+          tbody.innerHTML = `
+            <tr>
+              <td>No Book Borrowed....</td>
+            </tr>
+          `;
+        }
+      });
+    </script>
   </body>
 </html>

@@ -59,25 +59,25 @@
         <div class="sidebar-menu">
           <ul>
             <li>
-              <a class="active" href="">
+              <a class="active" href="/">
                 <span class="las la-home"></span>
                 <span>Home</span>
               </a>
             </li>
             <li>
-              <a class="" href="">
+              <a class="" href="/catalog">
+                <span class="las la-prescription-bottle-alt"></span>
+                <span>Catalog</span>
+              </a>
+            </li>
+            <li>
+              <a class="" href="/borrowed">
                 <span class="las la-user-plus"></span>
                 <span>Borrowed Books</span>
               </a>
             </li>
             <li>
-              <a class="" href="">
-                <span class="las la-prescription-bottle-alt"></span>
-                <span>All Books</span>
-              </a>
-            </li>
-            <li>
-              <a class="" href="">
+              <a class="" href="/users">
                 <span class="las la-prescription-bottle-alt"></span>
                 <span>Users</span>
               </a>
@@ -114,67 +114,67 @@
       </header>
       <main>
         <div class="fullwidth-ctr">
-          <div class="card">
+          <form class="card" id="new_book_form">
             <div class="table-header-flex">
-              <h4>All Books</h4>
+              <h4>Give away</h4>
               <div class="table-header-search-ctr">
-                <input
-                  class="form-control mr-sm-2"
-                  type="search"
-                  placeholder="Search"
-                  aria-label="Search"
-                />
+                <button class="btn btn-primary" type="submit" name="submit">
+                  Submit
+                </button>
               </div>
             </div>
-            <table class="table">
-              <thead>
-                <tr>
-                  <th scope="col">Book Name</th>
-                  <th scope="col">Author</th>
-                  <th scope="col">Publisher</th>
-                  <th scope="col">Added by</th>
-                  <th scope="col">Number of Copies</th>
-                  <th scope="col">Copies Available</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>Javascript mysteries</td>
-                  <td>Sam</td>
-                  <td>Mk Publishers</td>
-                  <td>Acol Stephen</td>
-                  <td>20</td>
-                  <td>15</td>
-                </tr>
-                <tr>
-                  <td>Javascript mysteries</td>
-                  <td>Sam</td>
-                  <td>Mk Publishers</td>
-                  <td>Acol Stephen</td>
-                  <td>20</td>
-                  <td>15</td>
-                </tr>
-                <tr>
-                  <td>Javascript mysteries</td>
-                  <td>Sam</td>
-                  <td>Mk Publishers</td>
-                  <td>Acol Stephen</td>
-                  <td>20</td>
-                  <td>15</td>
-                </tr>
-                <tr>
-                  <td>Javascript mysteries</td>
-                  <td>Sam</td>
-                  <td>Mk Publishers</td>
-                  <td>Acol Stephen</td>
-                  <td>20</td>
-                  <td>15</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
+            <div class="form_ctr_flex">
+              <div>
+                <div class="form-group">
+                  <label for="book_title">Book Title</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="book_title"
+                    name="book_title"
+                  />
+                </div>
+                <div class="form-group">
+                  <label for="book_holder">Name Of Book Holder</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="book_holder"
+                    name="book_holder"
+                    placeholder="Enter book holder"
+                  />
+                </div>
+              </div>
+            </div>
+          </form>
         </div>
       </main>
     </div>
+
+    <script src="./scripts/axios.js"></script>
+    <script>
+      let form_submit = document.getElementById("new_book_form");
+      form_submit.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        let data_obj = {};
+        let form_data = new FormData(e.target);
+        form_data.forEach((v, i) => {
+          data_obj[i] = v;
+        });
+        let res = await axios.post("/api/books/give_away", data_obj);
+        if (res.data == "1") {
+          alert("A server error occured....");
+        } else {
+          alert("Recorded, Press Ok to Continue....");
+          window.location.assign("/catalog");
+        }
+      });
+
+      document.addEventListener("DOMContentLoaded", async () => {
+        let id = new URLSearchParams(window.location.search).get("v");
+        let res = await axios.get("/api/books/" + id);
+        document.getElementById("book_title").value = res.data[0].book_title;
+      });
+    </script>
   </body>
 </html>

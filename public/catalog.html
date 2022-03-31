@@ -13,6 +13,10 @@
       rel="stylesheet"
       href="https://maxst.icons8.com/vue-static/landings/line-awesome/line-awesome/1.3.0/css/line-awesome.min.css"
     />
+    <link
+      rel="stylesheet"
+      href="https://maxst.icons8.com/vue-static/landings/line-awesome/line-awesome/1.3.0/css/line-awesome.min.css"
+    />
     <link rel="stylesheet" href="./bootstrap/css/bootstrap.min.css" />
 
     <style>
@@ -59,13 +63,13 @@
         <div class="sidebar-menu">
           <ul>
             <li>
-              <a class="active" href="/">
+              <a class="" href="/">
                 <span class="las la-home"></span>
                 <span>Home</span>
               </a>
             </li>
             <li>
-              <a class="" href="/catalog">
+              <a class="active" href="/catalog">
                 <span class="las la-prescription-bottle-alt"></span>
                 <span>Catalog</span>
               </a>
@@ -113,61 +117,18 @@
         </div>
       </header>
       <main>
-        <div class="cards">
-          <div class="card-single">
-            <div class="">
-              <h3>...</h3>
-              <span>
-                Total Books <br />
-                <span style="font-size: 13px">In the System</span>
-              </span>
-            </div>
-            <div class="">
-              <span class="las la-users"> </span>
-            </div>
-          </div>
-          <div class="card-single">
-            <div class="">
-              <h3>...</h3>
-              <span>Books Taken</span>
-              <br />
-              <span style="font-size: 13px">off the shelvies</span>
-            </div>
-            <div class="">
-              <span class="las la-users"></span>
-            </div>
-          </div>
-          <div class="card-single">
-            <div class="">
-              <h3>...</h3>
-              <span>Books Available</span>
-              <br />
-              <span style="font-size: 13px">For use</span>
-            </div>
-            <div class="">
-              <span class="las la-users"> </span>
-            </div>
-          </div>
-          <div class="card-single">
-            <div class="">
-              <h3>...</h3>
-              <span>System Users</span>
-              <br />
-              <span style="font-size: 13px"> managing the system</span>
-            </div>
-            <div class="">
-              <span class="las la-users"> </span>
-            </div>
-          </div>
-        </div>
         <div class="fullwidth-ctr">
           <div class="card">
             <div class="table-header-flex">
-              <h4>Recently Added</h4>
+              <h4>All Books</h4>
               <div class="table-header-search-ctr">
-                <a href="/new">
-                  <button class="btn btn-primary">Register A Book</button>
-                </a>
+                <input
+                  type="search"
+                  class="form-control"
+                  aria-label="search"
+                  placeholder="Search Catalog...."
+                  id="search_input"
+                />
               </div>
             </div>
             <table class="table">
@@ -220,6 +181,51 @@
             </tr>
           s`;
         }
+      });
+
+      let search_input = document.getElementById("search_input");
+
+      search_input.addEventListener("keyup", async (e) => {
+        e.preventDefault();
+        let http = new XMLHttpRequest();
+        http.onreadystatechange = () => {
+          if (http.readyState == 4 && http.status == 200) {
+            let books = JSON.parse(http.responseText);
+            let row = "";
+            if (books.length < 1) {
+              row = `
+                <tr>
+                    <td>No Matching Books</td>
+                </tr>
+                `;
+            } else {
+              books.forEach((el) => {
+                row += `
+                  <tr>
+                    <td>${el.book_title}</td>
+                    <td>${el.book_author}</td>
+                    <td>${el.book_publisher}</td>
+                    <td>${el.book_rack}</td>
+                    <td>${el.book_shelf}</td>
+                    <td>${el.book_copies}</td>
+                    <td>
+                      <a href="/book?v=${el.book_id}">
+                        <button class="btn btn-primary">Details</button>
+                      </a>
+                    </td>
+                  </tr>
+              `;
+              });
+            }
+            document.getElementById("fill_books").innerHTML = row;
+          }
+        };
+        http.open(
+          "GET",
+          `/api/books/search/${search_input.value || " "}`,
+          true
+        );
+        http.send();
       });
     </script>
   </body>

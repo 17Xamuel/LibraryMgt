@@ -113,114 +113,79 @@
         </div>
       </header>
       <main>
-        <div class="cards">
-          <div class="card-single">
-            <div class="">
-              <h3>...</h3>
-              <span>
-                Total Books <br />
-                <span style="font-size: 13px">In the System</span>
-              </span>
-            </div>
-            <div class="">
-              <span class="las la-users"> </span>
-            </div>
-          </div>
-          <div class="card-single">
-            <div class="">
-              <h3>...</h3>
-              <span>Books Taken</span>
-              <br />
-              <span style="font-size: 13px">off the shelvies</span>
-            </div>
-            <div class="">
-              <span class="las la-users"></span>
-            </div>
-          </div>
-          <div class="card-single">
-            <div class="">
-              <h3>...</h3>
-              <span>Books Available</span>
-              <br />
-              <span style="font-size: 13px">For use</span>
-            </div>
-            <div class="">
-              <span class="las la-users"> </span>
-            </div>
-          </div>
-          <div class="card-single">
-            <div class="">
-              <h3>...</h3>
-              <span>System Users</span>
-              <br />
-              <span style="font-size: 13px"> managing the system</span>
-            </div>
-            <div class="">
-              <span class="las la-users"> </span>
-            </div>
-          </div>
-        </div>
         <div class="fullwidth-ctr">
           <div class="card">
             <div class="table-header-flex">
-              <h4>Recently Added</h4>
+              <h4>Book Details</h4>
               <div class="table-header-search-ctr">
-                <a href="/new">
-                  <button class="btn btn-primary">Register A Book</button>
+                <a href="/" id="give_away">
+                  <button class="btn btn-secondary">Give away</button>
+                </a>
+                <a href="/">
+                  <button class="btn btn-success">Return</button>
+                </a>
+                <a href="/">
+                  <button class="btn btn-primary">Home</button>
                 </a>
               </div>
             </div>
-            <table class="table">
-              <thead>
-                <tr>
-                  <th scope="col">Book Title</th>
-                  <th scope="col">Author</th>
-                  <th scope="col">Publisher</th>
-                  <th scope="col">Rack No</th>
-                  <th scope="col">Number of Copies</th>
-                  <th scope="col">Shelf No</th>
-                </tr>
-              </thead>
-              <tbody id="fill_books"></tbody>
-            </table>
+            <div class="details-ctr">
+              <div class="side_1">
+                <div>
+                  <span class="title"> Book Identification Number </span>
+                  <span class="title-value" id="book_id">...</span>
+                </div>
+                <div>
+                  <span class="title"> Author </span>
+                  <span class="title-value" id="book_author">...</span>
+                </div>
+                <div>
+                  <span class="title">Rack No </span>
+                  <span class="title-value" id="book_rack">...</span>
+                </div>
+                <div>
+                  <span class="title"> Total Copies </span>
+                  <span class="title-value" id="book_copies">...</span>
+                </div>
+              </div>
+              <div class="side_2">
+                <div>
+                  <span class="title"> Book Title </span>
+                  <span class="title-value" id="book_title">...</span>
+                </div>
+                <div>
+                  <span class="title"> Published By </span>
+                  <span class="title-value" id="book_publisher">...</span>
+                </div>
+                <div>
+                  <span class="title"> Available Copies </span>
+                  <span class="title-value" id="book_rem_copies">...</span>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </main>
     </div>
     <script src="./scripts/axios.js"></script>
     <script>
+      let id = new URLSearchParams(window.location.search).get("v");
       document.addEventListener("DOMContentLoaded", async () => {
-        let res = await axios.get("/api/books/all");
-        let tbody = document.getElementById("fill_books");
-        let fill_html_1 = ``;
-        if (res.data.length > 0) {
-          res.data.forEach((el) => {
-            fill_html_1 += `
-            <tr>
-              <td>${el.book_title}</td>
-              <td>${el.book_author}</td>
-              <td>${el.book_publisher}</td>
-              <td>${el.book_rack}</td>
-              <td>${el.book_shelf}</td>
-              <td>${el.book_copies}</td>
-              <td>
-                <a href="/book?v=${el.book_id}">
-                  <button class="btn btn-primary">Details</button>
-                </a>
-              </td>
-            </tr>
-            `;
-          });
+        document.getElementById("give_away").href = "/give_away?v=" + id;
 
-          tbody.innerHTML = fill_html_1;
-        } else {
-          tbody.innerHTML = `
-            <tr>
-              <td>No Book Added....</td>
-            </tr>
-          s`;
+        let res = await axios.get("/api/books/" + id);
+        if (typeof res.data == "object") {
+          Object.keys(res.data[0]).forEach((el, i) => {
+            displayData(el, res.data[0]);
+          });
         }
       });
+
+      function displayData(ctr, v) {
+        if (document.getElementById(ctr) != null) {
+          document.getElementById(ctr).innerHTML = v[ctr] || " ... ";
+        }
+      }
     </script>
   </body>
 </html>

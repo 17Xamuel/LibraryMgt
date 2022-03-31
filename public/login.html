@@ -61,7 +61,7 @@
           alert("Wrong Details Provided...");
         } else {
           alert("Success, Press Ok to Continue....");
-          sessionStorage.setItem("user", JSON.stringify(res.data));
+          sessionStorage.setItem("user", JSON.stringify(res.data[0]));
           window.location.reload();
         }
       });
