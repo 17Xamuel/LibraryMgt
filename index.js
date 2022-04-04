@@ -164,6 +164,18 @@ app.get("/api/books/borrowed", (req, res) => {
     if (err) {
       throw err;
     } else {
+      console.log(result);
+      res.send(result);
+    }
+  });
+});
+
+app.get("/api/users/all", (req, res) => {
+  conn.query("SELECT * FROM user_tbl", (err, result) => {
+    if (err) {
+      throw err;
+    } else {
+      console.log(result);
       res.send(result);
     }
   });
